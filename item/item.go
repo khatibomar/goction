@@ -29,3 +29,10 @@ func (i *Item) UpdatePrice(newPrice uint64) {
 	defer i.mu.Unlock()
 	i.CurrentPrice = newPrice
 }
+
+// Lock will lock the struct
+// The use case of this is when the auction on the Item ends
+// TODO(khatibomar)[Urgent]: is it safe to never Release lock?
+func (i *Item) Lock() {
+	i.mu.Lock()
+}
