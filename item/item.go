@@ -12,7 +12,7 @@ var (
 
 // Item is simplest abstraction of an Item in an auction
 type Item struct {
-	mu            sync.Mutex
+	mu            sync.RWMutex
 	name          string
 	startingPrice uint64
 	currentPrice  uint64
@@ -47,8 +47,9 @@ func (i *Item) UpdatePrice(newPrice uint64) error {
 }
 
 // GetPrice will return the current item price
-// TODO(khatibomar): Should I lock here?
 func (i *Item) GetPrice() uint64 {
+	i.mu.RLock()
+	defer i.mu.RUnlock()
 	return i.currentPrice
 }
 
