@@ -53,6 +53,14 @@ func (i *Item) GetPrice() uint64 {
 	return i.currentPrice
 }
 
+func (i *Item) GetName() string {
+	return i.name
+}
+
+func (i *Item) GetCurrency() string {
+	return i.currency
+}
+
 // Lock will lock the struct
 // The use case of this is when the auction on the Item ends
 func (i *Item) Lock() {
