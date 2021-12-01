@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/hashicorp/raft"
 	"github.com/khatibomar/goction/item"
 )
 
@@ -15,6 +16,11 @@ type application struct {
 	item     *item.Item
 	errorLog *log.Logger
 	infoLog  *log.Logger
+}
+
+type srv struct {
+	server *http.Server
+	raft   *raft.Raft
 }
 
 func main() {
@@ -32,16 +38,18 @@ func main() {
 		infoLog:  infoLog,
 	}
 
-	srv := &http.Server{
-		Addr:         *addr,
-		ErrorLog:     errorLog,
-		Handler:      app.routes(),
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
+	srv := srv{
+		server: &http.Server{
+			Addr:         *addr,
+			ErrorLog:     errorLog,
+			Handler:      app.routes(),
+			IdleTimeout:  time.Minute,
+			ReadTimeout:  5 * time.Second,
+			WriteTimeout: 10 * time.Second,
+		},
 	}
 
 	infoLog.Printf("Starting server on %s", *addr)
-	err := srv.ListenAndServe()
+	err := srv.server.ListenAndServe()
 	errorLog.Fatal(err)
 }
