@@ -99,12 +99,7 @@ func (app *application) socketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer ws.Close()
 
-	if err != nil {
-		app.errorLog.Println(err)
-		return
-	}
-
-	go app.writer(ws)
+	go writer(ws, app.item.GetPrice)
 	reader(ws)
 }
 
@@ -142,8 +137,7 @@ func (app *application) updatePrice(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// TODO(khatibomar): this should not be an app method!
-func (app *application) writer(ws *websocket.Conn) {
+func writer(ws *websocket.Conn, getPrice func() uint64) {
 	pingTicker := time.NewTicker(pingPeriod)
 	priceTicker := time.NewTicker(priceWait)
 	defer func() {
@@ -152,7 +146,7 @@ func (app *application) writer(ws *websocket.Conn) {
 		ws.Close()
 	}()
 	for {
-		price := strconv.FormatUint(app.item.GetPrice(), 10)
+		price := strconv.FormatUint(getPrice(), 10)
 
 		select {
 		case <-priceTicker.C:
