@@ -21,7 +21,12 @@ func (app *application) updatePrice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	price, err := strconv.ParseInt(string(reqBody), 10, 64)
+	price, err := strconv.ParseUint(string(reqBody), 10, 64)
+	if err != nil {
+		app.errorLog.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	err = app.item.UpdatePrice(uint64(price))
 	if err != nil {
