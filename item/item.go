@@ -8,6 +8,7 @@ import (
 var (
 	ErrLocked = errors.New("Item is locked")
 	ErrLower  = errors.New("New price is lower than old price")
+	ErrSame   = errors.New("New price is same as old price")
 )
 
 // Item is simplest abstraction of an Item in an auction
@@ -41,6 +42,8 @@ func (i *Item) UpdatePrice(newPrice uint64) error {
 	}
 	if i.currentPrice > newPrice {
 		return ErrLower
+	} else if i.currentPrice == newPrice {
+		return ErrSame
 	}
 	i.currentPrice = newPrice
 	return nil
