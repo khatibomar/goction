@@ -13,6 +13,7 @@ import (
 
 type application struct {
 	// TODO(khatibomar) : make it a slice of items
+	host     string
 	item     *item.Item
 	errorLog *log.Logger
 	infoLog  *log.Logger
@@ -33,6 +34,7 @@ func main() {
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	app := &application{
+		host:     "localhost" + *addr,
 		item:     potatoItem,
 		errorLog: errorLog,
 		infoLog:  infoLog,
